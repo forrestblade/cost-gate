@@ -1,0 +1,37 @@
+{
+  "name": "cost-gate",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Claude Code hook that tracks cumulative token spend and denies tool calls when a budget ceiling is hit",
+  "bin": {
+    "cost-gate": "bin/cost-gate.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "validate": "tsc --noEmit && eslint .",
+    "prepublishOnly": "npm run validate && npm run build"
+  },
+  "author": "Forrest",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@valencets/resultkit": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "neostandard": "^0.12.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0"
+  }
+}
