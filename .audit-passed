@@ -1,0 +1,1 @@
+Audited 2026-03-22. Fixed: unsafe as SessionState cast replaced with field-by-field validation. Verified: no throw/try/catch, no enum/switch, fromThrowable used correctly, 34 tests passing. Remaining: Record<string,unknown> in cli.ts (documented limitation for hook payloads).

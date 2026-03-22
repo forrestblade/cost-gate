@@ -35,11 +35,30 @@ export function readSession (cwd: string): Result<SessionState, CostGateError> {
   }
 
   const safeParse = fromThrowable(
-    (text: string) => JSON.parse(text) as SessionState,
+    (text: string) => JSON.parse(text) as unknown,
     (): CostGateError => ({ code: 'PARSE_FAILED', message: `Invalid JSON in session file at ${filePath}` })
   )
 
-  return safeParse(readResult.value)
+  const parseResult = safeParse(readResult.value)
+  if (parseResult.isErr()) return err(parseResult.error)
+
+  const data = parseResult.value
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+    return err({ code: 'PARSE_FAILED', message: 'Session file is not a JSON object' })
+  }
+  const obj = data as Record<string, unknown>
+  if (typeof obj.started !== 'string' || typeof obj.totalTokens !== 'number' ||
+      typeof obj.totalCost !== 'number' || typeof obj.budget !== 'number' ||
+      typeof obj.calls !== 'number') {
+    return err({ code: 'PARSE_FAILED', message: 'Session file has invalid or missing fields' })
+  }
+  return ok({
+    started: obj.started,
+    totalTokens: obj.totalTokens,
+    totalCost: obj.totalCost,
+    budget: obj.budget,
+    calls: obj.calls
+  })
 }
 
 export function writeSession (cwd: string, session: SessionState): Result<void, CostGateError> {
